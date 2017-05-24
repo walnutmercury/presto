@@ -70,6 +70,7 @@ public enum CassandraType
     INT(IntegerType.INTEGER, Integer.class),
     TEXT(createUnboundedVarcharType(), String.class),
     TIMESTAMP(TimestampType.TIMESTAMP, Date.class),
+    DATE(DateType.DATE, Date.class),
     UUID(createVarcharType(Constants.UUID_STRING_MAX_LENGTH), java.util.UUID.class),
     TIMEUUID(createVarcharType(Constants.UUID_STRING_MAX_LENGTH), java.util.UUID.class),
     VARCHAR(createUnboundedVarcharType(), String.class),
@@ -131,6 +132,8 @@ public enum CassandraType
                 return COUNTER;
             case CUSTOM:
                 return CUSTOM;
+            case DATE:
+                return DATE;
             case DECIMAL:
                 return DECIMAL;
             case DOUBLE:
@@ -208,6 +211,8 @@ public enum CassandraType
                     return NullableValue.of(nativeType, utf8Slice(row.getUUID(i).toString()));
                 case TIMESTAMP:
                     return NullableValue.of(nativeType, row.getTimestamp(i).getTime());
+                case DATE:
+                    return NullableValue.of(nativeType, (long) row.getDate(i).getDaysSinceEpoch());
                 case INET:
                     return NullableValue.of(nativeType, utf8Slice(toAddrString(row.getInet(i))));
                 case VARINT:
@@ -333,6 +338,8 @@ public enum CassandraType
                     return row.getUUID(i).toString();
                 case TIMESTAMP:
                     return Long.toString(row.getTimestamp(i).getTime());
+                case DATE:
+                    return CassandraCqlUtils.quoteStringLiteral(row.getDate(i).toString());
                 case INET:
                     return CassandraCqlUtils.quoteStringLiteral(toAddrString(row.getInet(i)));
                 case VARINT:
@@ -356,6 +363,7 @@ public enum CassandraType
             case UUID:
             case TIMEUUID:
             case TIMESTAMP:
+            case DATE:
             case INET:
             case VARINT:
                 return CassandraCqlUtils.quoteStringLiteralForJson(object.toString());
@@ -431,6 +439,8 @@ public enum CassandraType
                 return new BigDecimal(nativeValue.toString());
             case TIMESTAMP:
                 return new Date((Long) nativeValue);
+            case DATE:
+                return ((Long) nativeValue).intValue();
             case UUID:
             case TIMEUUID:
                 return java.util.UUID.fromString(((Slice) nativeValue).toStringUtf8());
@@ -463,6 +473,7 @@ public enum CassandraType
             case FLOAT:
             case DECIMAL:
             case TIMESTAMP:
+            case DATE:
             case UUID:
             case TIMEUUID:
                 return value;
@@ -536,7 +547,7 @@ public enum CassandraType
             return TEXT;
         }
         else if (type.equals(DateType.DATE)) {
-            return TEXT;
+            return DATE;
         }
         else if (type.equals(VarbinaryType.VARBINARY)) {
             return BLOB;

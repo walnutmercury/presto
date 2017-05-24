@@ -123,6 +123,7 @@ public class CassandraTestingUtils
                 " typetinyint tinyint, " +
                 " typebytes blob, " +
                 " typetimestamp timestamp, " +
+                " typedate date, " +
                 " typeansi ascii, " +
                 " typeboolean boolean, " +
                 " typedecimal decimal, " +
@@ -152,6 +153,7 @@ public class CassandraTestingUtils
                 " typetinyint tinyint, " +
                 " typebytes blob, " +
                 " typetimestamp timestamp, " +
+                " typedate date, " +
                 " typeansi ascii, " +
                 " typeboolean boolean, " +
                 " typedecimal decimal, " +
@@ -174,6 +176,7 @@ public class CassandraTestingUtils
                 // TODO: NOT YET SUPPORTED AS A PARTITION KEY
                 // "   typebytes, " +
                 "   typetimestamp, " +
+                "   typedate, " +
                 "   typeansi, " +
                 "   typeboolean, " +
                 // TODO: PRECISION LOST. IMPLEMENT IT AS STRING
@@ -207,6 +210,7 @@ public class CassandraTestingUtils
                     .value("typetinyint", rowNumber.byteValue())
                     .value("typebytes", ByteBuffer.wrap(Ints.toByteArray(rowNumber)).asReadOnlyBuffer())
                     .value("typetimestamp", date)
+                    .value("typedate", date)
                     .value("typeansi", "ansi " + rowNumber)
                     .value("typeboolean", rowNumber % 2 == 0)
                     .value("typedecimal", new BigDecimal(Math.pow(2, rowNumber)))
