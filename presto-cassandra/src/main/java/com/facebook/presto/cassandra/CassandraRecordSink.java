@@ -36,7 +36,9 @@ import static com.facebook.presto.spi.type.BigintType.BIGINT;
 import static com.facebook.presto.spi.type.DateType.DATE;
 import static com.facebook.presto.spi.type.IntegerType.INTEGER;
 import static com.facebook.presto.spi.type.RealType.REAL;
+import static com.facebook.presto.spi.type.SmallintType.SMALLINT;
 import static com.facebook.presto.spi.type.TimestampType.TIMESTAMP;
+import static com.facebook.presto.spi.type.TinyintType.TINYINT;
 import static com.facebook.presto.spi.type.VarbinaryType.VARBINARY;
 import static com.facebook.presto.spi.type.Varchars.isVarcharType;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -138,6 +140,12 @@ public class CassandraRecordSink
         }
         else if (BIGINT.equals(columnType)) {
             append(value);
+        }
+        else if (SMALLINT.equals(columnTypes.get(field))) {
+            append(((Number) value).shortValue());
+        }
+        else if (TINYINT.equals(columnTypes.get(field))) {
+            append(((Number) value).byteValue());
         }
         else {
             throw new UnsupportedOperationException("Type is not supported: " + columnType);
